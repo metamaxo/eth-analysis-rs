@@ -21,6 +21,7 @@ RUN sed -i 's#dummy.rs#src/bin/serve.rs#' Cargo.toml
 COPY src ./src
 COPY .sqlx ./.sqlx
 COPY migrations ./migrations
+COPY data ./data
 RUN cargo build --release --bin phoenix-service
 RUN cargo build --release --bin record-eth-price
 RUN cargo build --release --bin sync-beacon-states
@@ -52,6 +53,7 @@ COPY --from=builder /app/target/release/update-issuance-estimate /app
 COPY --from=builder /app/src/bin/update-supply-projection-inputs/in_contracts_by_day.json /app/src/bin/update-supply-projection-inputs/in_contracts_by_day.json
 COPY --from=builder /app/target/release/update-supply-projection-inputs /app
 COPY --from=builder /app/target/release/update-validator-rewards /app
+COPY --from=builder /app/data /app/data
 
 EXPOSE 3002
 ENTRYPOINT ["/app/serve"]
